@@ -1,0 +1,58 @@
+[
+  {
+    "id": "sample-dx-001",
+    "title": "Straightforward diagnosis",
+    "category": "diagnosis",
+    "note_text": "Patient has essential hypertension and continues home medication.",
+    "expected_behavior": "Hypertension recommendation can be accepted when corpus validation passes."
+  },
+  {
+    "id": "sample-proc-001",
+    "title": "Explicit procedure",
+    "category": "procedure",
+    "note_text": "Laparoscopic cholecystectomy performed without complication.",
+    "expected_behavior": "Procedure code is recommended and validated against the PCS sample corpus."
+  },
+  {
+    "id": "sample-negation-001",
+    "title": "Negated condition",
+    "category": "negation",
+    "note_text": "Patient denies pneumonia. Essential hypertension is documented.",
+    "expected_behavior": "Pneumonia is flagged as negated and should not be accepted."
+  },
+  {
+    "id": "sample-ruled-out-001",
+    "title": "Ruled-out diagnosis",
+    "category": "ruled-out",
+    "note_text": "Pneumonia was ruled out after clear chest x-ray.",
+    "expected_behavior": "Ruled-out pneumonia is visible as a review flag."
+  },
+  {
+    "id": "sample-family-history-001",
+    "title": "Family history",
+    "category": "family-history",
+    "note_text": "Family history of hypertension noted; no current hypertension diagnosis documented.",
+    "expected_behavior": "Family history language is flagged and not auto-accepted."
+  },
+  {
+    "id": "sample-history-001",
+    "title": "History-of diagnosis",
+    "category": "history",
+    "note_text": "History of pneumonia documented. No active respiratory infection today.",
+    "expected_behavior": "History-of phrasing requires review instead of active diagnosis acceptance."
+  },
+  {
+    "id": "sample-specificity-001",
+    "title": "Insufficient specificity",
+    "category": "specificity",
+    "note_text": "Patient has diabetes.",
+    "expected_behavior": "Diabetes recommendation needs documentation because specificity is missing."
+  },
+  {
+    "id": "sample-invalid-001",
+    "title": "Invalid-code simulation",
+    "category": "invalid-code",
+    "note_text": "This invalid-code sample triggers an unknown local corpus code.",
+    "expected_behavior": "Unknown candidate is marked not_in_configured_corpus."
+  }
+]

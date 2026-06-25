@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ICD-10 Coding Pipeline PoC</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Local hackathon demo</p>
+        <h1>ICD-10 Coding Review Workbench</h1>
+      </div>
+      <a class="docs-link" href="/docs">API docs</a>
+    </header>
+
+    <main>
+      <section class="warning" role="alert">
+        <strong>Local demo only.</strong>
+        This interface can persist full note text locally when enabled. Do not use production PHI.
+      </section>
+
+      <section class="workspace" aria-labelledby="session-heading">
+        <div class="panel">
+          <h2 id="session-heading">Session</h2>
+          <label for="role-select">Demo user</label>
+          <select id="role-select"></select>
+          <p class="helper">Credentials are documented in DEMO_CREDENTIALS.md. This selector is not production auth.</p>
+
+          <label for="sample-select">Sample case</label>
+          <select id="sample-select"></select>
+          <button id="load-sample" type="button">Load Sample</button>
+        </div>
+
+        <div class="panel editor-panel">
+          <h2>Encounter Note</h2>
+          <label for="note-text">Clinical note text</label>
+          <textarea id="note-text" rows="11" spellcheck="false"></textarea>
+          <label class="checkbox-row">
+            <input id="persist-note" type="checkbox">
+            Persist full note text locally for this demo run
+          </label>
+          <p class="helper">Persistence is off by default in the UI. Submitted results are tied to the note snapshot at submit time.</p>
+          <div class="actions">
+            <label class="checkbox-row">
+              <input id="include-debug" type="checkbox">
+              Include local debug trace
+            </label>
+            <button id="run-code" type="button">Run Coding</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="message" class="message" aria-live="polite"></section>
+
+      <section id="results" class="results" aria-labelledby="results-heading" aria-busy="false">
+        <h2 id="results-heading">Recommendations</h2>
+        <div id="summary"></div>
+        <div id="global-flags"></div>
+        <div id="diagnosis-table"></div>
+        <div id="procedure-table"></div>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

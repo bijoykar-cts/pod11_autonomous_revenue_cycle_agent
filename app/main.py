@@ -10,8 +10,7 @@ from app.config import Settings
 from app.corpus.loader import load_default_corpus
 
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
-STATIC_DIR = ROOT_DIR / "static"
+STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 
 def _error_response(status_code: int, code: str, message: str, details=None) -> JSONResponse:
