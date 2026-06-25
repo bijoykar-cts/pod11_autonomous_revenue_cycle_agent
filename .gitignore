@@ -1,0 +1,121 @@
+# OS and editor noise
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# IDEs
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.iml
+*.ipr
+*.iws
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment and local secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+*.local
+application-local.yml
+application-local.yaml
+application-local.properties
+application-*.local.yml
+application-*.local.yaml
+application-*.local.properties
+
+# Java and Spring Boot
+target/
+build/
+out/
+.gradle/
+bin/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Maven wrapper keeps the wrapper jar by default
+!.mvn/wrapper/maven-wrapper.jar
+
+# Gradle wrapper keeps wrapper metadata by default
+!gradle/wrapper/gradle-wrapper.jar
+
+# Spring Boot runtime artifacts
+spring.log
+*.pid
+*.hprof
+
+# Node, React, and frontend builds
+node_modules/
+.pnp/
+.pnp.js
+.pnp.cjs
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.parcel-cache/
+.next/
+.nuxt/
+.svelte-kit/
+.vite/
+dist/
+coverage/
+storybook-static/
+
+# TypeScript and test caches
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+.jest/
+.vitest/
+
+# Package manager generated folders
+.npm/
+.pnpm-store/
+
+# Codex local/project tooling
+.codex/cache/
+.codex/logs/
+.codex/tmp/
+.codex/sessions/
+.codex/state/
+.codex/*.local.*
+.codex/**/*.local.*
+
+# Large third-party project-local Codex installs.
+# Remove these lines if you intentionally want to version agent/skill packs.
+.codex/agents/
+.codex/skills/
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.cache/
+
+# Archives and packaged artifacts
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
