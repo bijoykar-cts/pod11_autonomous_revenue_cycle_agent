@@ -96,3 +96,23 @@ def test_requested_unknown_corpus_version_is_rejected():
     body = response.json()
     assert body["success"] is False
     assert body["error"]["code"] == "unsupported_corpus_version"
+
+
+def test_code_endpoint_uses_submitted_clinical_note_text():
+    response = make_client().post(
+        "/api/code",
+        json={
+            "case_id": "orthopaedics-context",
+            "note_text": (
+                "Displaced intracapsular NOF fracture left with osteoporosis. "
+                "Patient underwent left total hip arthroplasty cemented."
+            ),
+            "include_debug": False,
+            "persist_note": False,
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()["data"]
+    assert any(code["code"] == "S72.002A" for code in body["diagnosis_codes"])
+    assert any(code["code"] == "0SRB0JZ" for code in body["procedure_codes"])

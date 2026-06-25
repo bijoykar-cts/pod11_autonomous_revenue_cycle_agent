@@ -7,5 +7,23 @@
     "excludes": [],
     "corpus_version": "configured-default",
     "active": true
+  },
+  {
+    "code": "0SRB0JZ",
+    "code_system": "ICD-10-PCS",
+    "description": "Replacement of Left Hip Joint with Synthetic Substitute, Open Approach",
+    "includes": ["left total hip arthroplasty", "left hip replacement"],
+    "excludes": [],
+    "corpus_version": "configured-default",
+    "active": true
+  },
+  {
+    "code": "0SRS0JZ",
+    "code_system": "ICD-10-PCS",
+    "description": "Replacement of Left Hip Joint, Femoral Surface with Synthetic Substitute, Open Approach",
+    "includes": ["left hip hemiarthroplasty", "femoral surface replacement"],
+    "excludes": [],
+    "corpus_version": "configured-default",
+    "active": true
   }
 ]

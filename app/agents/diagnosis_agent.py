@@ -49,6 +49,14 @@ class DiagnosisRecommendationAgent:
             return "E11.9" if finding.confidence >= 0.9 else "E11"
         if finding.name == "pneumonia":
             return "J18.9"
+        if finding.name == "left-femoral-neck-fracture":
+            return "S72.002A"
+        if finding.name == "osteoporosis":
+            return "M81.0"
+        if finding.name == "difficulty-walking":
+            return "R26.2"
+        if finding.name == "left-hip-pain":
+            return "M25.552"
         if finding.name == "invalid-code-simulation":
             return "ZZZ999"
         return "ZZZ999"

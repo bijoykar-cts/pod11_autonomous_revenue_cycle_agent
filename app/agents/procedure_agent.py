@@ -11,7 +11,7 @@ class ProcedureRecommendationAgent:
             if finding.category != "procedure":
                 continue
 
-            code = "0FT44ZZ" if finding.name == "cholecystectomy" else "ZZZ999"
+            code = self._code_for_finding(finding)
             validation = validate_code(corpus, code, "ICD-10-PCS")
             flags = list(finding.flags)
             validation_score = 1.0 if validation.validation_status == "valid" else 0.0
@@ -41,3 +41,12 @@ class ProcedureRecommendationAgent:
                 )
             )
         return recommendations
+
+    def _code_for_finding(self, finding: ClinicalFinding) -> str:
+        if finding.name == "cholecystectomy":
+            return "0FT44ZZ"
+        if finding.name == "left-total-hip-arthroplasty":
+            return "0SRB0JZ"
+        if finding.name == "left-hip-hemiarthroplasty":
+            return "0SRS0JZ"
+        return "ZZZ999"

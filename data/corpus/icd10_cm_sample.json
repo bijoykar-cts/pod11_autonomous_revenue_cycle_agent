@@ -34,5 +34,41 @@
     "excludes": [],
     "corpus_version": "configured-default",
     "active": true
+  },
+  {
+    "code": "S72.002A",
+    "code_system": "ICD-10-CM",
+    "description": "Fracture of unspecified part of neck of left femur, initial encounter for closed fracture",
+    "includes": ["left femoral neck fracture", "left NOF fracture", "left hip fracture"],
+    "excludes": [],
+    "corpus_version": "configured-default",
+    "active": true
+  },
+  {
+    "code": "M81.0",
+    "code_system": "ICD-10-CM",
+    "description": "Age-related osteoporosis without current pathological fracture",
+    "includes": ["senile osteoporosis", "postmenopausal osteoporosis", "osteoporosis"],
+    "excludes": [],
+    "corpus_version": "configured-default",
+    "active": true
+  },
+  {
+    "code": "R26.2",
+    "code_system": "ICD-10-CM",
+    "description": "Difficulty in walking, not elsewhere classified",
+    "includes": ["unable to bear weight", "difficulty walking"],
+    "excludes": [],
+    "corpus_version": "configured-default",
+    "active": true
+  },
+  {
+    "code": "M25.552",
+    "code_system": "ICD-10-CM",
+    "description": "Pain in left hip",
+    "includes": ["left hip pain"],
+    "excludes": [],
+    "corpus_version": "configured-default",
+    "active": true
   }
 ]

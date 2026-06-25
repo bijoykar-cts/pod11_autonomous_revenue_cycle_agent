@@ -134,6 +134,79 @@ class ClinicalExtractionAgent:
                 )
             )
 
+        for match in re.finditer(
+            r"\b(?:displaced\s+intracapsular\s+)?(?:nof|neck\s+of\s+femur|femoral\s+neck|hip)\s+fracture\b|\bfracture\s+(?:left\s+)?(?:neck\s+of\s+femur|nof)\b",
+            note_text,
+            re.I,
+        ):
+            context = _window(note_text, match.start(), match.end(), radius=48)
+            flags: list[ReviewFlag] = []
+            confidence = 0.93
+            if "left" not in context:
+                flags.append(
+                    ReviewFlag(
+                        type="specificity_gap",
+                        message="Fracture laterality is not explicit in the evidence window.",
+                    )
+                )
+                confidence = 0.72
+            findings.append(
+                ClinicalFinding(
+                    name="left-femoral-neck-fracture",
+                    category="diagnosis",
+                    evidence=_evidence(note_text, match.start(), match.end()),
+                    context=context,
+                    confidence=confidence,
+                    flags=tuple(flags),
+                )
+            )
+
+        for match in re.finditer(r"\bosteoporosis\b", note_text, re.I):
+            findings.append(
+                ClinicalFinding(
+                    name="osteoporosis",
+                    category="diagnosis",
+                    evidence=_evidence(note_text, match.start(), match.end()),
+                    context=_window(note_text, match.start(), match.end()),
+                    confidence=0.9,
+                    flags=(),
+                )
+            )
+
+        for match in re.finditer(r"\bunable\s+to\s+bear\s+weight\b|\bdifficulty\s+walking\b", note_text, re.I):
+            findings.append(
+                ClinicalFinding(
+                    name="difficulty-walking",
+                    category="diagnosis",
+                    evidence=_evidence(note_text, match.start(), match.end()),
+                    context=_window(note_text, match.start(), match.end()),
+                    confidence=0.76,
+                    flags=(
+                        ReviewFlag(
+                            type="symptom_context",
+                            message="Functional limitation is extracted as supporting context.",
+                        ),
+                    ),
+                )
+            )
+
+        for match in re.finditer(r"\bleft\s+hip\s+pain\b|\bpain\s+in\s+left\s+hip\b", note_text, re.I):
+            findings.append(
+                ClinicalFinding(
+                    name="left-hip-pain",
+                    category="diagnosis",
+                    evidence=_evidence(note_text, match.start(), match.end()),
+                    context=_window(note_text, match.start(), match.end()),
+                    confidence=0.74,
+                    flags=(
+                        ReviewFlag(
+                            type="symptom_context",
+                            message="Pain is extracted as supporting context.",
+                        ),
+                    ),
+                )
+            )
+
         for match in re.finditer(r"\blaparoscopic\s+cholecystectomy\b|\bcholecystectomy\b", note_text, re.I):
             findings.append(
                 ClinicalFinding(
@@ -142,6 +215,30 @@ class ClinicalExtractionAgent:
                     evidence=_evidence(note_text, match.start(), match.end()),
                     context=_window(note_text, match.start(), match.end()),
                     confidence=0.96 if "performed" in lower_note else 0.76,
+                    flags=(),
+                )
+            )
+
+        for match in re.finditer(r"\bleft\s+total\s+hip\s+arthroplasty\b|\bleft\s+hip\s+replacement\b", note_text, re.I):
+            findings.append(
+                ClinicalFinding(
+                    name="left-total-hip-arthroplasty",
+                    category="procedure",
+                    evidence=_evidence(note_text, match.start(), match.end()),
+                    context=_window(note_text, match.start(), match.end(), radius=42),
+                    confidence=0.95,
+                    flags=(),
+                )
+            )
+
+        for match in re.finditer(r"\bleft\s+(?:hip\s+)?hemiarthroplasty\b", note_text, re.I):
+            findings.append(
+                ClinicalFinding(
+                    name="left-hip-hemiarthroplasty",
+                    category="procedure",
+                    evidence=_evidence(note_text, match.start(), match.end()),
+                    context=_window(note_text, match.start(), match.end(), radius=42),
+                    confidence=0.92,
                     flags=(),
                 )
             )
