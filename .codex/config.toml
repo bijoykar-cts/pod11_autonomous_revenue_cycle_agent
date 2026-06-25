@@ -120,3 +120,15 @@ config_file = "agents/reviewer.toml"
 [agents.docs_researcher]
 description = "Documentation specialist that verifies APIs, framework behavior, and release notes."
 config_file = "agents/docs-researcher.toml"
+
+[agents.extractor_agent]
+description = "Extractor Agent for auditable clinical entity extraction from raw physician notes, discharge summaries, and operative reports."
+config_file = "agents/extractor-agent.toml"
+
+[agents.coder_agent]
+description = "Coder Agent for ICD-10-CM/PCS mapping with Pinecone retrieval, specificity rationale, sequencing, and HCC flags."
+config_file = "agents/coder-agent.toml"
+
+[agents.auditor_agent]
+description = "Auditor Agent for coding compliance review, CDI gap detection, completeness scoring, and submission readiness."
+config_file = "agents/auditor-agent.toml"

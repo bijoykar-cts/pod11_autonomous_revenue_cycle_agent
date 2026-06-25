@@ -79,6 +79,9 @@ Sample role configs in this repo:
 - `.codex/agents/explorer.toml` — read-only evidence gathering
 - `.codex/agents/reviewer.toml` — correctness/security review
 - `.codex/agents/docs-researcher.toml` — API and release-note verification
+- `.codex/agents/extractor-agent.toml` — raw clinical note entity extraction to `clinical_entities.json`
+- `.codex/agents/coder-agent.toml` — ICD-10-CM/PCS coding with Pinecone retrieval to `icd10_coded_output.json`
+- `.codex/agents/auditor-agent.toml` — coding audit, CDI gaps, and readiness scoring to `audit_report.json`
 
 ## Key Differences from Claude Code
 
@@ -100,3 +103,6 @@ Since Codex lacks hooks, security enforcement is instruction-based:
 3. Run `npm audit` / `pip audit` before committing
 4. Review `git diff` before every push
 5. Use `sandbox_mode = "workspace-write"` in config
+
+## PROMT and task log
+For each Phase , note all agent and skill used and elapsed time with a .md file
