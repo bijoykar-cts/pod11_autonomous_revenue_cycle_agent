@@ -96,16 +96,6 @@ __pycache__/
 .npm/
 .pnpm-store/
 
-
-
-# Large third-party project-local Codex installs.
-# Keep the general packs ignored, but allow project-specific agent definitions.
-.codex/agents/*
-!.codex/agents/extractor-agent.toml
-!.codex/agents/coder-agent.toml
-!.codex/agents/auditor-agent.toml
-.codex/skills/
-
 # Temporary files
 tmp/
 temp/
