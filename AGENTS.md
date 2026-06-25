@@ -6,6 +6,7 @@ This is a **production-ready AI coding plugin** providing 67 specialized agents,
 
 ## Core Principles
 
+
 1. **Agent-First** — Delegate to specialized agents for domain tasks
 2. **Test-Driven** — Write tests before implementation, 80%+ coverage required
 3. **Security-First** — Never compromise on security; validate all inputs

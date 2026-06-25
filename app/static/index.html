@@ -39,6 +39,14 @@
 
         <div class="panel editor-panel">
           <h2>Encounter Note</h2>
+          <div class="import-box">
+            <label for="document-file">Import Word, PDF, or text document</label>
+            <div class="import-controls">
+              <input id="document-file" type="file" accept=".docx,.pdf,.txt,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,text/plain">
+              <button id="import-document" type="button">Import Document</button>
+            </div>
+            <p class="helper">Imported text is loaded into Clinical note text and is not persisted unless local persistence is explicitly enabled.</p>
+          </div>
           <label for="note-text">Clinical note text</label>
           <textarea id="note-text" rows="11" spellcheck="false"></textarea>
           <label class="checkbox-row">

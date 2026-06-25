@@ -1,18 +1,21 @@
 import json
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, File, HTTPException, Request, UploadFile
 
 from app.api.schemas import (
     CodeRequest,
     CodingEnvelope,
     DemoUser,
+    DocumentExtractData,
+    DocumentExtractEnvelope,
     HealthData,
     HealthEnvelope,
     SampleCase,
     SamplesEnvelope,
     UsersEnvelope,
 )
+from app.documents.extractor import DocumentExtractionError, extract_document_text
 from app.orchestration.coding_pipeline import CodingPipeline
 from app.storage.local_store import LocalStore
 
@@ -95,3 +98,27 @@ def code(payload: CodeRequest, request: Request) -> CodingEnvelope:
         persist_note=payload.persist_note,
     )
     return CodingEnvelope(success=True, data=result, error=None)
+
+
+@router.post("/documents/extract", response_model=DocumentExtractEnvelope)
+async def extract_document(file: UploadFile = File(...)) -> DocumentExtractEnvelope:
+    filename = file.filename or "uploaded-document"
+    content = await file.read()
+    try:
+        document_type, note_text = extract_document_text(filename, content)
+    except DocumentExtractionError as exc:
+        raise HTTPException(
+            status_code=exc.status_code,
+            detail="Document extraction failed",
+            headers={"X-Error-Code": exc.code},
+        ) from exc
+    return DocumentExtractEnvelope(
+        success=True,
+        data=DocumentExtractData(
+            filename=filename,
+            document_type=document_type,
+            note_text=note_text,
+            character_count=len(note_text),
+        ),
+        error=None,
+    )

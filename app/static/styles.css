@@ -117,13 +117,29 @@ label {
 }
 
 select,
-textarea {
+textarea,
+input[type="file"] {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 10px;
   background: #fff;
   color: var(--text);
+}
+
+.import-box {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.import-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
 }
 
 textarea {
@@ -289,5 +305,9 @@ ul {
   table {
     display: block;
     overflow-x: auto;
+  }
+
+  .import-controls {
+    grid-template-columns: 1fr;
   }
 }

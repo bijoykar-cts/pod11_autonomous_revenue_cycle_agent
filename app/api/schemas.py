@@ -90,6 +90,13 @@ class DemoUser(BaseModel):
     role: str
 
 
+class DocumentExtractData(BaseModel):
+    filename: str
+    document_type: Literal["txt", "docx", "pdf"]
+    note_text: str
+    character_count: int = Field(ge=0)
+
+
 class HealthEnvelope(BaseModel):
     success: bool
     data: HealthData | None
@@ -111,4 +118,10 @@ class SamplesEnvelope(BaseModel):
 class UsersEnvelope(BaseModel):
     success: bool
     data: list[DemoUser] | None
+    error: ErrorInfo | None
+
+
+class DocumentExtractEnvelope(BaseModel):
+    success: bool
+    data: DocumentExtractData | None
     error: ErrorInfo | None

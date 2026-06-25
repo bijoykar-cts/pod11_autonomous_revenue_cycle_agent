@@ -8,6 +8,8 @@ const state = {
 const roleSelect = document.querySelector("#role-select");
 const sampleSelect = document.querySelector("#sample-select");
 const loadSampleButton = document.querySelector("#load-sample");
+const documentFile = document.querySelector("#document-file");
+const importDocumentButton = document.querySelector("#import-document");
 const noteText = document.querySelector("#note-text");
 const persistNote = document.querySelector("#persist-note");
 const includeDebug = document.querySelector("#include-debug");
@@ -75,6 +77,40 @@ function loadSelectedSample() {
   noteText.value = sample.note_text;
   state.dirty = false;
   setMessage(`Loaded sample: ${sample.title}`);
+}
+
+async function importDocument() {
+  const file = documentFile.files?.[0];
+  if (!file) {
+    setMessage("Choose a Word, PDF, or text document first.", true);
+    return;
+  }
+  if (state.dirty && !confirm("Replace the current note with imported document text?")) {
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  importDocumentButton.disabled = true;
+  setMessage(`Importing ${file.name}...`);
+  try {
+    const response = await fetch("/api/documents/extract", {
+      method: "POST",
+      body: formData,
+    });
+    const body = await response.json();
+    if (!response.ok || !body.success) {
+      throw new Error(body.error?.message || "Document import failed");
+    }
+    noteText.value = body.data.note_text;
+    state.dirty = false;
+    setMessage(`Imported ${body.data.filename} (${body.data.character_count} characters).`);
+    noteText.focus();
+  } catch (error) {
+    setMessage(error.message || "Document import failed.", true);
+  } finally {
+    importDocumentButton.disabled = false;
+  }
 }
 
 function score(value) {
@@ -221,6 +257,7 @@ noteText.addEventListener("input", () => {
   state.dirty = true;
 });
 loadSampleButton.addEventListener("click", loadSelectedSample);
+importDocumentButton.addEventListener("click", importDocument);
 runCodeButton.addEventListener("click", runCoding);
 
 init();
