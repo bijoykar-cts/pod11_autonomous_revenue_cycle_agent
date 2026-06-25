@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request
 
 from app.api.schemas import (
     CodeRequest,
@@ -76,6 +76,12 @@ def users() -> UsersEnvelope:
 def code(payload: CodeRequest, request: Request) -> CodingEnvelope:
     settings = request.app.state.settings
     corpus = request.app.state.corpus
+    if payload.corpus_version is not None and payload.corpus_version != corpus.version:
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported corpus version",
+            headers={"X-Error-Code": "unsupported_corpus_version"},
+        )
     if payload.persist_note:
         LocalStore(enabled=settings.enable_local_note_persistence).persist_note(
             case_id=payload.case_id,

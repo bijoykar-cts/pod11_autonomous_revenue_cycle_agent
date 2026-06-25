@@ -62,6 +62,13 @@ a:focus-visible {
   text-transform: uppercase;
 }
 
+.top-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: flex-end;
+}
+
 .docs-link {
   color: #fff;
 }
@@ -264,6 +271,10 @@ ul {
 
   .app-header {
     padding: 20px;
+  }
+
+  .top-nav {
+    justify-content: flex-start;
   }
 
   .docs-link {

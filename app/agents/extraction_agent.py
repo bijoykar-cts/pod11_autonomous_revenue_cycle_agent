@@ -115,6 +115,14 @@ class ClinicalExtractionAgent:
                     )
                 )
                 confidence = 0.18
+            if "history of" in context:
+                flags.append(
+                    ReviewFlag(
+                        type="history_of_condition",
+                        message="History-of phrasing needs human review.",
+                    )
+                )
+                confidence = min(confidence, 0.48)
             findings.append(
                 ClinicalFinding(
                     name="pneumonia",

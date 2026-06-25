@@ -78,3 +78,21 @@ def test_code_error_does_not_echo_note_text():
     assert note not in body_text
     assert "Jane Example" not in body_text
     assert "private note text" not in body_text
+
+
+def test_requested_unknown_corpus_version_is_rejected():
+    response = make_client().post(
+        "/api/code",
+        json={
+            "case_id": "wrong-corpus",
+            "note_text": "Patient has essential hypertension.",
+            "corpus_version": "alternate-version",
+            "include_debug": False,
+            "persist_note": False,
+        },
+    )
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["success"] is False
+    assert body["error"]["code"] == "unsupported_corpus_version"

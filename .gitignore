@@ -83,11 +83,14 @@ coverage/
 storybook-static/
 
 # TypeScript and test caches
+__pycache__/
+*.py[cod]
 *.tsbuildinfo
 .eslintcache
 .stylelintcache
 .jest/
 .vitest/
+.pytest_cache/
 
 # Package manager generated folders
 .npm/

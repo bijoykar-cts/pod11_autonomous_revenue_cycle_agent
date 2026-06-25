@@ -19,6 +19,15 @@ const globalFlags = document.querySelector("#global-flags");
 const diagnosisTable = document.querySelector("#diagnosis-table");
 const procedureTable = document.querySelector("#procedure-table");
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 function setMessage(text, isError = false) {
   message.textContent = text;
   message.className = isError ? "message error" : "message";
@@ -41,13 +50,15 @@ async function loadJson(url) {
 
 function populateUsers(users) {
   roleSelect.innerHTML = users.map((user) => {
-    return `<option value="${user.username}">${user.display_name} (${user.role})</option>`;
+    const username = escapeHtml(user.username);
+    const label = `${escapeHtml(user.display_name)} (${escapeHtml(user.role)})`;
+    return `<option value="${username}">${label}</option>`;
   }).join("");
 }
 
 function populateSamples(samples) {
   sampleSelect.innerHTML = samples.map((sample) => {
-    return `<option value="${sample.id}">${sample.title}</option>`;
+    return `<option value="${escapeHtml(sample.id)}">${escapeHtml(sample.title)}</option>`;
   }).join("");
 }
 
@@ -74,7 +85,9 @@ function flagsList(flags) {
   if (!flags || flags.length === 0) {
     return "<span class=\"muted\">None</span>";
   }
-  return `<ul>${flags.map((flag) => `<li><strong>${flag.type}</strong>: ${flag.message}</li>`).join("")}</ul>`;
+  return `<ul>${flags.map((flag) => {
+    return `<li><strong>${escapeHtml(flag.type)}</strong>: ${escapeHtml(flag.message)}</li>`;
+  }).join("")}</ul>`;
 }
 
 function evidenceList(evidence) {
@@ -82,19 +95,25 @@ function evidenceList(evidence) {
     return "<span class=\"muted\">No evidence</span>";
   }
   return `<ul>${evidence.map((item) => {
-    return `<li><code>chars ${item.start}-${item.end}</code> <span class="snippet">${item.redacted_snippet}</span></li>`;
+    return `<li><code>chars ${Number(item.start)}-${Number(item.end)}</code> <span class="snippet">${escapeHtml(item.redacted_snippet)}</span></li>`;
   }).join("")}</ul>`;
 }
 
+function safeStatus(status) {
+  const allowed = new Set(["accepted", "suggested", "rejected", "needs_documentation"]);
+  return allowed.has(status) ? status : "suggested";
+}
+
 function renderRecommendations(title, target, rows) {
+  const safeTitle = escapeHtml(title);
   if (!rows || rows.length === 0) {
-    target.innerHTML = `<h3>${title}</h3><p class="muted">No recommendations.</p>`;
+    target.innerHTML = `<h3>${safeTitle}</h3><p class="muted">No recommendations.</p>`;
     return;
   }
   target.innerHTML = `
-    <h3>${title}</h3>
+    <h3>${safeTitle}</h3>
     <table>
-      <caption>${title} recommendations</caption>
+      <caption>${safeTitle} recommendations</caption>
       <thead>
         <tr>
           <th scope="col">Status</th>
@@ -106,33 +125,39 @@ function renderRecommendations(title, target, rows) {
         </tr>
       </thead>
       <tbody>
-        ${rows.map((row) => `
-          <tr>
-            <td><span class="status ${row.status}">${row.status}</span></td>
-            <td><strong>${row.code}</strong><br><span class="muted">${row.validation_status}</span></td>
-            <td>${row.description || "No configured-corpus description"}</td>
-            <td>
-              <strong>${score(row.confidence)}</strong>
-              <dl>
-                <dt>Retrieval</dt><dd>${score(row.retrieval_score)}</dd>
-                <dt>Evidence</dt><dd>${score(row.evidence_score)}</dd>
-                <dt>Validation</dt><dd>${score(row.validation_score)}</dd>
-              </dl>
-            </td>
-            <td>${evidenceList(row.evidence)}</td>
-            <td>${flagsList(row.review_flags)}</td>
-          </tr>
-        `).join("")}
+        ${rows.map((row) => {
+          const status = safeStatus(row.status);
+          return `
+            <tr>
+              <td><span class="status ${status}">${escapeHtml(status)}</span></td>
+              <td><strong>${escapeHtml(row.code)}</strong><br><span class="muted">${escapeHtml(row.validation_status)}</span></td>
+              <td>${escapeHtml(row.description || "No configured-corpus description")}</td>
+              <td>
+                <strong>${score(row.confidence)}</strong>
+                <dl>
+                  <dt>Retrieval</dt><dd>${score(row.retrieval_score)}</dd>
+                  <dt>Evidence</dt><dd>${score(row.evidence_score)}</dd>
+                  <dt>Validation</dt><dd>${score(row.validation_score)}</dd>
+                </dl>
+              </td>
+              <td>${evidenceList(row.evidence)}</td>
+              <td>${flagsList(row.review_flags)}</td>
+            </tr>
+          `;
+        }).join("")}
       </tbody>
     </table>
   `;
 }
 
 function renderResults(data) {
+  const debugLine = data.debug
+    ? `<p><strong>Trace:</strong> ${escapeHtml(data.debug.trace_id)} (${score(data.debug.timing_ms / 1000)} of one second)</p>`
+    : "";
   summary.innerHTML = `
-    <p><strong>Case:</strong> ${data.case_id}</p>
-    <p><strong>Corpus:</strong> ${data.corpus_version}</p>
-    ${data.debug ? `<p><strong>Trace:</strong> ${data.debug.trace_id} (${data.debug.timing_ms} ms)</p>` : ""}
+    <p><strong>Case:</strong> ${escapeHtml(data.case_id)}</p>
+    <p><strong>Corpus:</strong> ${escapeHtml(data.corpus_version)}</p>
+    ${debugLine}
   `;
   globalFlags.innerHTML = `<h3>Review Flags</h3>${flagsList(data.review_flags)}`;
   renderRecommendations("Diagnosis", diagnosisTable, data.diagnosis_codes);

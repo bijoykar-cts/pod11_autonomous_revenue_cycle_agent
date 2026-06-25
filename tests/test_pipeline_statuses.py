@@ -26,6 +26,13 @@ def test_ruled_out_condition_is_flagged():
     assert all(code.status != "accepted" for code in result.diagnosis_codes)
 
 
+def test_history_of_condition_requires_review():
+    result = run_pipeline("History of pneumonia documented. No active infection today.")
+
+    assert any(flag.type == "history_of_condition" for flag in result.review_flags)
+    assert all(code.code != "J18.9" or code.status != "accepted" for code in result.diagnosis_codes)
+
+
 def test_specificity_gap_returns_needs_documentation():
     result = run_pipeline("Patient has diabetes.")
 

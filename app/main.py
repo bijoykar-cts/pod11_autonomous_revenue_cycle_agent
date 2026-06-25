@@ -60,7 +60,12 @@ def create_app() -> FastAPI:
     @app.exception_handler(HTTPException)
     async def http_exception_handler(request, exc):  # noqa: ANN001
         del request
-        return _error_response(exc.status_code, "http_error", "Request failed.")
+        code = exc.headers.get("X-Error-Code") if exc.headers else None
+        return _error_response(
+            exc.status_code,
+            code or "http_error",
+            "Request failed.",
+        )
 
     @app.exception_handler(Exception)
     async def unhandled_exception_handler(request, exc):  # noqa: ANN001

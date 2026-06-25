@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ICD-10 Coding Pipeline PoC Presentation</title>
+    <style>
+      /* ===========================================
+         VIEWPORT FITTING: MANDATORY BASE STYLES
+         =========================================== */
+      html, body {
+        height: 100%;
+        overflow-x: hidden;
+      }
+
+      html {
+        scroll-snap-type: y mandatory;
+        scroll-behavior: smooth;
+      }
+
+      .slide {
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .slide-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        max-height: 100%;
+        overflow: hidden;
+        padding: var(--slide-padding);
+      }
+
+      :root {
+        --title-size: clamp(1.5rem, 5vw, 4rem);
+        --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
+        --h3-size: clamp(1rem, 2.5vw, 1.75rem);
+        --body-size: clamp(0.75rem, 1.5vw, 1.125rem);
+        --small-size: clamp(0.65rem, 1vw, 0.875rem);
+        --slide-padding: clamp(1rem, 4vw, 4rem);
+        --content-gap: clamp(0.5rem, 2vw, 2rem);
+        --element-gap: clamp(0.25rem, 1vw, 1rem);
+        --ink: #071013;
+        --paper: #f7f2e8;
+        --signal: #ff4d1f;
+        --blue: #1357c8;
+        --muted: #65707a;
+      }
+
+      .card, .container, .content-box {
+        max-width: min(90vw, 1000px);
+        max-height: min(80vh, 700px);
+      }
+
+      .feature-list, .bullet-list {
+        gap: clamp(0.4rem, 1vh, 1rem);
+      }
+
+      .feature-list li, .bullet-list li {
+        font-size: var(--body-size);
+        line-height: 1.4;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+        gap: clamp(0.5rem, 1.5vw, 1rem);
+      }
+
+      img, .image-container {
+        max-width: 100%;
+        max-height: min(50vh, 400px);
+        object-fit: contain;
+      }
+
+      @media (max-height: 700px) {
+        :root {
+          --slide-padding: clamp(0.75rem, 3vw, 2rem);
+          --content-gap: clamp(0.4rem, 1.5vw, 1rem);
+          --title-size: clamp(1.25rem, 4.5vw, 2.5rem);
+          --h2-size: clamp(1rem, 3vw, 1.75rem);
+        }
+      }
+
+      @media (max-height: 600px) {
+        :root {
+          --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem);
+          --content-gap: clamp(0.3rem, 1vw, 0.75rem);
+          --title-size: clamp(1.1rem, 4vw, 2rem);
+          --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
+        }
+
+        .nav-dots, .keyboard-hint, .decorative {
+          display: none;
+        }
+      }
+
+      @media (max-height: 500px) {
+        :root {
+          --slide-padding: clamp(0.4rem, 2vw, 1rem);
+          --title-size: clamp(1rem, 3.5vw, 1.5rem);
+          --h2-size: clamp(0.9rem, 2.5vw, 1.25rem);
+          --body-size: clamp(0.65rem, 1vw, 0.85rem);
+        }
+      }
+
+      @media (max-width: 600px) {
+        :root {
+          --title-size: clamp(1.25rem, 7vw, 2.5rem);
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.2s !important;
+        }
+
+        html {
+          scroll-behavior: auto;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family: "Trebuchet MS", Verdana, sans-serif;
+      }
+
+      h1, h2, h3, p {
+        margin: 0;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        font-size: var(--title-size);
+        line-height: 0.95;
+        max-width: 11ch;
+      }
+
+      h2 {
+        font-size: var(--h2-size);
+        line-height: 1.05;
+      }
+
+      h3 {
+        font-size: var(--h3-size);
+      }
+
+      p, li {
+        font-size: var(--body-size);
+      }
+
+      .slide {
+        background:
+          linear-gradient(90deg, rgba(19, 87, 200, 0.08) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(19, 87, 200, 0.06) 1px, transparent 1px),
+          var(--paper);
+        background-size: 52px 52px;
+      }
+
+      .slide:nth-child(even) {
+        background:
+          radial-gradient(circle at 78% 18%, rgba(255, 77, 31, 0.2), transparent 26%),
+          linear-gradient(90deg, rgba(7, 16, 19, 0.08) 1px, transparent 1px),
+          var(--paper);
+      }
+
+      .kicker {
+        color: var(--signal);
+        font-size: var(--small-size);
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-bottom: var(--element-gap);
+      }
+
+      .subtitle {
+        max-width: 58ch;
+        margin-top: var(--content-gap);
+        color: #24313a;
+      }
+
+      .tag {
+        display: inline-block;
+        width: fit-content;
+        margin-top: var(--content-gap);
+        border: 2px solid var(--ink);
+        background: #fff;
+        padding: 0.45rem 0.75rem;
+        font-size: var(--small-size);
+        font-weight: 800;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--content-gap);
+        align-items: center;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--element-gap);
+      }
+
+      .card {
+        border: 2px solid var(--ink);
+        background: rgba(255, 255, 255, 0.88);
+        padding: clamp(0.75rem, 2vw, 1.2rem);
+        box-shadow: 8px 8px 0 var(--ink);
+      }
+
+      .card strong {
+        display: block;
+        color: var(--blue);
+        margin-bottom: 0.35rem;
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: var(--element-gap);
+      }
+
+      .flow div {
+        min-height: 16vh;
+        border: 2px solid var(--ink);
+        background: #fff;
+        padding: clamp(0.6rem, 1.2vw, 1rem);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .metric {
+        font-size: clamp(1.8rem, 5vw, 4.6rem);
+        font-weight: 900;
+        color: var(--signal);
+      }
+
+      .progress {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 5px;
+        width: 0;
+        background: var(--signal);
+        z-index: 20;
+      }
+
+      .keyboard-hint {
+        position: fixed;
+        right: 18px;
+        bottom: 14px;
+        font-size: var(--small-size);
+        color: var(--muted);
+        z-index: 21;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 360ms ease, transform 360ms ease;
+      }
+
+      .slide.active .reveal {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 850px) {
+        .split,
+        .cards,
+        .flow {
+          grid-template-columns: 1fr;
+        }
+
+        .flow div {
+          min-height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress" aria-hidden="true"></div>
+    <main>
+      <section class="slide active" aria-label="Title slide">
+        <div class="slide-content">
+          <p class="kicker reveal">Hackathon MVP</p>
+          <h1 class="reveal">ICD-10 Coding Pipeline</h1>
+          <p class="subtitle reveal">A local clinical coding assistant that extracts evidence, recommends ICD-10-CM/PCS candidates, validates against a configured corpus, and keeps human review visible.</p>
+          <span class="tag reveal">Safety > speed > polish</span>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Problem">
+        <div class="slide-content split">
+          <div>
+            <p class="kicker reveal">Problem</p>
+            <h2 class="reveal">Coding work is both interpretive and brittle.</h2>
+          </div>
+          <div class="card reveal">
+            <p>Clinical notes contain negation, history, specificity gaps, and procedure details. A valid code still needs evidence and a review path, not just a matching description.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Pipeline">
+        <div class="slide-content">
+          <p class="kicker reveal">Pipeline</p>
+          <h2 class="reveal">Three deterministic agents, one auditable result.</h2>
+          <div class="flow reveal">
+            <div><strong>1</strong><span>Note input</span></div>
+            <div><strong>2</strong><span>Evidence extraction</span></div>
+            <div><strong>3</strong><span>Code recommendation</span></div>
+            <div><strong>4</strong><span>Corpus validation</span></div>
+            <div><strong>5</strong><span>Human review state</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Safety">
+        <div class="slide-content">
+          <p class="kicker reveal">Safety Contract</p>
+          <h2 class="reveal">The MVP shows uncertainty instead of hiding it.</h2>
+          <div class="cards reveal">
+            <article class="card"><strong>Negation</strong><p>Denied and ruled-out diagnoses are flagged and not accepted.</p></article>
+            <article class="card"><strong>Specificity</strong><p>General findings become documentation needs when detail is missing.</p></article>
+            <article class="card"><strong>Validation</strong><p>Codes absent from the configured corpus are rejected as `not_in_configured_corpus`.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Demo">
+        <div class="slide-content split">
+          <div>
+            <p class="kicker reveal">Demo Surface</p>
+            <h2 class="reveal">Plain browser workbench, no build step.</h2>
+            <p class="subtitle reveal">Sample cases, note editor, review flags, diagnosis and procedure tables, score components, offsets, and redacted snippets.</p>
+          </div>
+          <div class="card reveal">
+            <span class="metric">16+</span>
+            <p>Automated tests cover schema, validation, pipeline status behavior, debug safety, and UI output contracts.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Architecture">
+        <div class="slide-content">
+          <p class="kicker reveal">Architecture</p>
+          <h2 class="reveal">Local-first, integration-ready.</h2>
+          <div class="cards reveal">
+            <article class="card"><strong>FastAPI</strong><p>Typed response envelopes and safe error handlers.</p></article>
+            <article class="card"><strong>Local corpus</strong><p>Deterministic source of truth for validation.</p></article>
+            <article class="card"><strong>Future adapters</strong><p>Pinecone and MySQL boundaries are isolated for post-MVP work.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Close">
+        <div class="slide-content split">
+          <div>
+            <p class="kicker reveal">Next</p>
+            <h2 class="reveal">From demo to production-shaped assistant.</h2>
+          </div>
+          <ul class="bullet-list reveal">
+            <li>Add real LLM extraction behind the existing contracts.</li>
+            <li>Import official ICD corpus and coding notes.</li>
+            <li>Add authentication, audit logging, encryption, and retention.</li>
+            <li>Use coder overrides as a feedback loop.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <div class="keyboard-hint">Use arrows, wheel, or swipe</div>
+    <script>
+      class Deck {
+        constructor() {
+          this.slides = [...document.querySelectorAll(".slide")];
+          this.progress = document.querySelector(".progress");
+          this.index = 0;
+          this.touchStart = 0;
+          this.observe();
+          this.bind();
+          this.update();
+        }
+
+        observe() {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              entry.target.classList.toggle("active", entry.isIntersecting);
+              if (entry.isIntersecting) {
+                this.index = this.slides.indexOf(entry.target);
+                this.update();
+              }
+            });
+          }, { threshold: 0.6 });
+          this.slides.forEach((slide) => observer.observe(slide));
+        }
+
+        bind() {
+          window.addEventListener("keydown", (event) => {
+            if (["ArrowDown", "PageDown", " "].includes(event.key)) this.go(1);
+            if (["ArrowUp", "PageUp"].includes(event.key)) this.go(-1);
+            if (event.key === "Home") this.jump(0);
+            if (event.key === "End") this.jump(this.slides.length - 1);
+          });
+          window.addEventListener("wheel", (event) => {
+            if (Math.abs(event.deltaY) > 40) this.go(event.deltaY > 0 ? 1 : -1);
+          }, { passive: true });
+          window.addEventListener("touchstart", (event) => {
+            this.touchStart = event.touches[0].clientY;
+          }, { passive: true });
+          window.addEventListener("touchend", (event) => {
+            const delta = this.touchStart - event.changedTouches[0].clientY;
+            if (Math.abs(delta) > 40) this.go(delta > 0 ? 1 : -1);
+          }, { passive: true });
+        }
+
+        go(direction) {
+          this.jump(this.index + direction);
+        }
+
+        jump(next) {
+          const bounded = Math.max(0, Math.min(this.slides.length - 1, next));
+          this.slides[bounded].scrollIntoView({ behavior: "smooth" });
+        }
+
+        update() {
+          this.progress.style.width = `${((this.index + 1) / this.slides.length) * 100}%`;
+        }
+      }
+
+      new Deck();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ICD-10 Coding Pipeline Workflow</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+      .workflow-map {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 16px;
+        margin: 18px 0;
+      }
+
+      .step {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface);
+        padding: 16px;
+        position: relative;
+      }
+
+      .step-number {
+        display: inline-grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #1b2a38;
+        color: #fff;
+        font-weight: 700;
+      }
+
+      .decision-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+      }
+
+      .metric-strip {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .metric {
+        border-left: 4px solid var(--accent);
+        background: #eef4ff;
+        padding: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Workflow map</p>
+        <h1>ICD-10 Coding Pipeline</h1>
+      </div>
+      <nav class="top-nav" aria-label="Demo pages">
+        <a class="docs-link" href="/">Workbench</a>
+        <a class="docs-link" href="/static/presentation.html">Presentation</a>
+        <a class="docs-link" href="/docs">API docs</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="warning" role="alert">
+        <strong>Local demo boundary:</strong>
+        local corpus validation is authoritative; persistence is disabled by default and is not production PHI compliance.
+      </section>
+
+      <section class="panel">
+        <h2>End-to-End Flow</h2>
+        <div class="workflow-map">
+          <article class="step">
+            <span class="step-number">1</span>
+            <h3>Submit Note</h3>
+            <p>Coder selects a synthetic case or pastes a single note. The UI keeps persistence off unless explicitly enabled.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">2</span>
+            <h3>Extract Evidence</h3>
+            <p>The extraction agent finds diagnoses, procedures, negation, history-of phrasing, and documentation gaps.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">3</span>
+            <h3>Recommend Codes</h3>
+            <p>Deterministic agents propose ICD-10-CM and ICD-10-PCS candidates with evidence offsets and redacted snippets.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">4</span>
+            <h3>Validate Locally</h3>
+            <p>The validator checks the configured local ICD corpus and returns `valid` or `not_in_configured_corpus`.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">5</span>
+            <h3>Resolve Review State</h3>
+            <p>Status is assigned as accepted, suggested, rejected, or needs documentation. Lower-confidence conflicts are suppressed.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">6</span>
+            <h3>Review Output</h3>
+            <p>The workbench displays rationale, confidence components, flags, validation status, and safe debug trace IDs.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="decision-grid" aria-label="Pipeline decision rules">
+        <article class="panel">
+          <h2>Safety Rules</h2>
+          <ul>
+            <li>No exact raw note text in validation errors or debug output.</li>
+            <li>Debug returns only trace ID and timing in local debug mode.</li>
+            <li>Unknown corpus versions fail with a safe error envelope.</li>
+            <li>Full note persistence is disabled by default.</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h2>Failure Modes</h2>
+          <ul>
+            <li>Negated and ruled-out conditions are flagged.</li>
+            <li>History-of and family-history language requires review.</li>
+            <li>Specificity gaps become documentation needs.</li>
+            <li>Absent corpus codes become `not_in_configured_corpus`.</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h2>Demo Metrics</h2>
+          <div class="metric-strip">
+            <div class="metric"><strong>Schema</strong><br>Stable envelope</div>
+            <div class="metric"><strong>Validation</strong><br>Local source of truth</div>
+            <div class="metric"><strong>Traceability</strong><br>Offsets + flags</div>
+            <div class="metric"><strong>Review</strong><br>Human-visible status</div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

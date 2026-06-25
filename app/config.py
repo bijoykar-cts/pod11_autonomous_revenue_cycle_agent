@@ -24,7 +24,7 @@ class Settings:
             corpus_version=os.getenv("CORPUS_VERSION", "configured-default"),
             enable_debug=_env_bool("ENABLE_DEBUG", False),
             enable_local_note_persistence=_env_bool(
-                "ENABLE_LOCAL_NOTE_PERSISTENCE", True
+                "ENABLE_LOCAL_NOTE_PERSISTENCE", False
             ),
             pinecone_enabled=_env_bool("PINECONE_ENABLED", False),
         )
