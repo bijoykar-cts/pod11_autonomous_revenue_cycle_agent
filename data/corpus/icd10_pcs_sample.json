@@ -1,0 +1,11 @@
+[
+  {
+    "code": "0FT44ZZ",
+    "code_system": "ICD-10-PCS",
+    "description": "Resection of Gallbladder, Percutaneous Endoscopic Approach",
+    "includes": ["laparoscopic cholecystectomy"],
+    "excludes": [],
+    "corpus_version": "configured-default",
+    "active": true
+  }
+]

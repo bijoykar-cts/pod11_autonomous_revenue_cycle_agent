@@ -1,0 +1,38 @@
+[
+  {
+    "code": "I10",
+    "code_system": "ICD-10-CM",
+    "description": "Essential (primary) hypertension",
+    "includes": ["high blood pressure"],
+    "excludes": [],
+    "corpus_version": "configured-default",
+    "active": true
+  },
+  {
+    "code": "E11",
+    "code_system": "ICD-10-CM",
+    "description": "Type 2 diabetes mellitus",
+    "includes": [],
+    "excludes": [],
+    "corpus_version": "configured-default",
+    "active": true
+  },
+  {
+    "code": "E11.9",
+    "code_system": "ICD-10-CM",
+    "description": "Type 2 diabetes mellitus without complications",
+    "includes": [],
+    "excludes": [],
+    "corpus_version": "configured-default",
+    "active": true
+  },
+  {
+    "code": "J18.9",
+    "code_system": "ICD-10-CM",
+    "description": "Pneumonia, unspecified organism",
+    "includes": [],
+    "excludes": [],
+    "corpus_version": "configured-default",
+    "active": true
+  }
+]

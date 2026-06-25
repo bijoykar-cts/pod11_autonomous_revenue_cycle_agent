@@ -26,6 +26,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Environment and local secrets
+.venv/
 .env
 .env.*
 !.env.example
@@ -92,14 +93,7 @@ storybook-static/
 .npm/
 .pnpm-store/
 
-# Codex local/project tooling
-.codex/cache/
-.codex/logs/
-.codex/tmp/
-.codex/sessions/
-.codex/state/
-.codex/*.local.*
-.codex/**/*.local.*
+
 
 # Large third-party project-local Codex installs.
 # Keep the general packs ignored, but allow project-specific agent definitions.
@@ -114,6 +108,7 @@ tmp/
 temp/
 .tmp/
 .cache/
+data/local/
 
 # Archives and packaged artifacts
 *.zip
